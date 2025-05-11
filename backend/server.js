@@ -203,6 +203,62 @@ app.get('/api/classes/:id', async (req, res) => {
     }
 });
 
+app.post('/api/classes', async (req, res) => {
+    try {
+        const { name, grade } = req.body;
+        const newClass = await pool.query(
+            'INSERT INTO classes (name, grade) VALUES ($1, $2) RETURNING *',
+            [name, grade]
+        );
+        res.status(201).json(newClass.rows[0]);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+app.put('/api/classes/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, grade } = req.body;
+        const updatedClass = await pool.query(
+            'UPDATE classes SET name = $1, grade = $2 WHERE id = $3 RETURNING *',
+            [name, grade, id]
+        );
+        
+        if (updatedClass.rows.length === 0) {
+            return res.status(404).json({ message: 'Class not found' });
+        }
+        
+        res.json(updatedClass.rows[0]);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+app.delete('/api/classes/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        // First check if the class has any timetable entries
+        const timetableEntries = await pool.query('SELECT COUNT(*) FROM timetable WHERE class_id = $1', [id]);
+        
+        if (parseInt(timetableEntries.rows[0].count) > 0) {
+            return res.status(400).json({ 
+                message: 'Cannot delete class with existing timetable entries. Please remove all class schedules first.' 
+            });
+        }
+
+        const result = await pool.query('DELETE FROM classes WHERE id = $1 RETURNING *', [id]);
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Class not found' });
+        }
+        
+        res.json({ message: 'Class deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 // Timetable Management
 app.get('/api/timetable', async (req, res) => {
     try {

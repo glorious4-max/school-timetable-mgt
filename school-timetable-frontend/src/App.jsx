@@ -6,6 +6,11 @@ import Dashboard from './pages/Dashboard';
 import TeacherList from './pages/teachers/TeacherList';
 import TeacherDetails from './pages/teachers/TeacherDetails';
 import TeacherForm from './pages/teachers/TeacherForm';
+import ClassList from './pages/classes/ClassList';
+import ClassDetails from './pages/classes/ClassDetails';
+import ClassForm from './pages/classes/ClassForm';
+import TimetableView from './pages/timetable/TimetableView';
+import TimetableForm from './pages/timetable/TimetableForm';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -51,6 +56,62 @@ function App() {
             element={
               <ProtectedRoute>
                 <TeacherForm />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/classes" 
+            element={
+              <ProtectedRoute>
+                <ClassList />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/classes/new" 
+            element={
+              <ProtectedRoute>
+                <ClassForm />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/classes/:id" 
+            element={
+              <ProtectedRoute>
+                <ClassDetails />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/classes/:id/edit" 
+            element={
+              <ProtectedRoute>
+                <ClassForm />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/timetable" 
+            element={
+              <ProtectedRoute>
+                <TimetableView />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/timetable/new" 
+            element={
+              <ProtectedRoute>
+                <TimetableForm />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/timetable/:id/edit" 
+            element={
+              <ProtectedRoute>
+                <TimetableForm />
               </ProtectedRoute>
             } 
           />
